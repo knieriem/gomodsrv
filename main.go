@@ -74,7 +74,7 @@ func main() {
 	flag.Parse()
 
 	err := f.Parse(&conf)
-	fmt.Println("# Go mod proxy v0.1 (" + f.Using + ")")
+	fmt.Println("# Go mod proxy (" + f.Using + ")")
 	if err != nil {
 		errExit(err)
 	}
