@@ -43,7 +43,7 @@ For example:
 	repositories (Currently, `gomodsrv` needs to be restarted in
 	order to make changes to local repositories visible)
 
--	speed up Mercurial access, caching some information
+-	to enable faster startup, speed up Mercurial access, caching some information
 
 -	support module versions ≥v2 that are managed in subdirectories
 
