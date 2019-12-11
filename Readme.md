@@ -23,9 +23,6 @@ a configuration file $HOME/lib/gomodsrv.ini has to be created with the following
 		<path to the root of a file system tree containing vcs-controlled modules>
 		<another path>
 
-	# if gomodsrv should serve Go's local cache if an unknown module is requested
-	fallback-to-mod-cache	
-
 	code-host-dir	<a directory, managed by modfetch/codehost, keeping local copies of repositories>
 
 	service-addr	<address to listen to>
@@ -34,8 +31,6 @@ For example:
 
 	vcs-module-roots
 		/home/src
-
-	fallback-to-mod-cache
 
 	code-host-dir	/home/gomodsrv/codehost
 
