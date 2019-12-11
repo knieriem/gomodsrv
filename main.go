@@ -69,7 +69,7 @@ type VCSRevision interface {
 
 func main() {
 	var conf confData
-	f := ini.NewFile("gomodsrv.ini", ".ini", "ini")
+	f := ini.NewFile("gomodsrv.ini", ".ini", "c")
 	ini.BindHomeLib()
 	flag.Parse()
 

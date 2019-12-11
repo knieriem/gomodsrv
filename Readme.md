@@ -16,7 +16,7 @@ This will copy -- and, in one case, patch -- internal packages
 from your local Go installation
 to `./internal/go` resp. `./internal/go.cmd` directories.  At least Go 1.13 is expected.
 
-For now, gomodsrv can be run without arguments;
+Gomodsrv can be run without arguments;
 a configuration file $HOME/lib/gomodsrv.ini has to be created with the following contents:
 
 	vcs-module-roots
@@ -36,6 +36,7 @@ For example:
 
 	service-addr	:7070
 
+An alternative configuration file may be specified using option `-c`.
 
 ### TODO
 
