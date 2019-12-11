@@ -1,18 +1,32 @@
-Gomodsrv is acting as a GOPROXY (see `go help goproxy`), serving
-versioned modules from local VCS repositories. Currently only
-Mercurial repositories are supported. The program is still
-in an early stage, but so far appears sufficient to make my
-private modules available to Go.
+Gomodsrv is acting as a GOPROXY (see `go help goproxy`),
+serving versioned modules from local VCS repositories.
+This may be useful for cases where you are using module paths like your-domain.com/x/y,
+but no Git or Mercurial servers provide the repositories,
+but instead the repositories are kept private in a file system structure
+(that's a different use case than the one supported by the GOPRIVATE variable).
 
-It can be run without arguments; a configuration file
-$HOME/lib/gomodsrv.ini has to be created with the following
-contents:
+Currently there is initial support for Git and Mercurial repositories,
+based on the `go` command's internal `modfetch/codehost` package.
+This way module ZIP files are created the same way as by the `go` tool.
+The program is still in an early stage,
+but so far appears sufficient to make my private modules available to Go locally.
+
+Before building the program, `sh setup.sh` must be run.
+This will copy -- and, in one case, patch -- internal packages
+from your local Go installation
+to `./internal/go` resp. `./internal/go.cmd` directories.  At least Go 1.13 is expected.
+
+For now, gomodsrv can be run without arguments;
+a configuration file $HOME/lib/gomodsrv.ini has to be created with the following contents:
 
 	vcs-module-roots
 		<path to the root of a file system tree containing vcs-controlled modules>
 		<another path>
 
-	fallback	<go.mod cache to use if an unknown module is requested>
+	# if gomodsrv should serve Go's local cache if an unknown module is requested
+	fallback-to-mod-cache	
+
+	code-host-dir	<a directory, managed by modfetch/codehost, keeping local copies of repositories>
 
 	service-addr	<address to listen to>
 
@@ -21,7 +35,9 @@ For example:
 	vcs-module-roots
 		/home/src
 
-	fallback	/home/go/pkg/mod/cache/download
+	fallback-to-mod-cache
+
+	code-host-dir	/home/gomodsrv/codehost
 
 	service-addr	:7070
 
@@ -32,4 +48,6 @@ For example:
 	repositories (Currently, `gomodsrv` needs to be restarted in
 	order to make changes to local repositories visible)
 
--	support Git.
+-	support module versions ≥v2 that are managed in subdirectories
+
+-	support multiple modules per repository

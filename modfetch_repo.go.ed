@@ -1,0 +1,12 @@
+e internal/go.cmd/modfetch/repo.go
+/^import (/,/^)/ g//\
+/"fmt"/d\
+/"errors"/d\
+/"strconv"/d
+.
+/internal.cfg/,/internal.web/ v/semver"/d
+.
+/^...Re: module paths, import paths,/,/^func.SortVersions/-2 d
+/^...A loggingRepo is/,/^...A notExistError/-1 d
+.
+w

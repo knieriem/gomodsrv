@@ -10,12 +10,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
 
 	"github.com/knieriem/text/ini"
 	"github.com/knieriem/tool"
+
+	"github.com/knieriem/gomodsrv/internal/go.cmd/modfetch/codehost"
 )
 
 var serviceAddr = ":7070"
@@ -24,6 +27,7 @@ type confData struct {
 	ServiceAddr        string
 	VcsModulesRoots    []string
 	FallbackToModCache bool
+	CodeHostDir        string
 }
 
 type ModuleMap map[string]*Module
@@ -53,9 +57,9 @@ type RevInfo struct {
 	Time    time.Time
 }
 type ModVersion struct {
-	Info  RevInfo
-	GoMod []byte
-	Rev   VCSRevision
+	Info     RevInfo
+	GoMod    []byte
+	WriteZIP func(io.Writer) error
 }
 
 type VCSRevision interface {
@@ -73,6 +77,7 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
+	codehost.WorkRoot = conf.CodeHostDir
 	roots := conf.VcsModulesRoots
 	if len(roots) == 0 {
 		fmt.Println("No vcs module root defined. Exiting.")
@@ -127,7 +132,7 @@ func main() {
 			if v == nil {
 				return
 			}
-			v.Rev.WriteZIP(w)
+			v.WriteZIP(w)
 		})
 		http.Handle("/"+path+"/", r)
 	}
@@ -152,10 +157,28 @@ func vcsRootScanModules(dest ModuleMap, baseDir string) error {
 		if info == nil {
 			return nil
 		}
-		if info.IsDir() && info.Name() == ".hg" {
-			root, _ := filepath.Split(path)
-			fmt.Println("\n\t" + root)
-			err := ScanMercurialVCS(dest, baseDir, root)
+		if !info.IsDir() {
+			return nil
+		}
+		if strings.HasPrefix(info.Name(), "_") {
+			return filepath.SkipDir
+		}
+		root, _ := filepath.Split(path)
+		if info.Name() == ".hg" {
+			if _, err := os.Stat(filepath.Join(root, ".git")); err == nil {
+				fmt.Println("\n\t"+root, "(hg. skipped)")
+				return filepath.SkipDir
+			}
+			fmt.Println("\n\t"+root, "(hg)")
+			err := ScanVCS(dest, "hg", baseDir, root)
+			if err != nil {
+				return err
+			}
+			return filepath.SkipDir
+		}
+		if info.Name() == ".git" {
+			fmt.Println("\n\t"+root, "(git)")
+			err := ScanVCS(dest, "git", baseDir, root)
 			if err != nil {
 				return err
 			}
