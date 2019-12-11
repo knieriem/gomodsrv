@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -132,7 +133,13 @@ func main() {
 			if v == nil {
 				return
 			}
-			v.WriteZIP(w)
+			var b bytes.Buffer
+			err := v.WriteZIP(&b)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			io.Copy(w, &b)
 		})
 		http.Handle("/"+path+"/", r)
 	}
