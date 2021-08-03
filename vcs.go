@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/knieriem/gomodsrv/internal/go.cmd/modfetch"
-	"github.com/knieriem/gomodsrv/internal/go.cmd/modfetch/codehost"
-	"github.com/knieriem/gomodsrv/internal/go.cmd/semver"
+	"github.com/knieriem/gointernal/cmd/go/modfetch"
+	"github.com/knieriem/gointernal/cmd/go/modfetch/codehost"
+	"golang.org/x/mod/semver"
 )
 
 func ScanVCS(mm ModuleMap, vcs, pathPrefix, repoRoot string) error {

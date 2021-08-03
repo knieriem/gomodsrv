@@ -11,11 +11,6 @@ This way module ZIP files are created the same way as by the `go` tool.
 The program is still in an early stage,
 but so far appears sufficient to make my private modules available to Go locally.
 
-Before building the program, `sh setup.sh` must be run.
-This will copy -- and, in one case, patch -- internal packages
-from your local Go installation
-to `./internal/go` resp. `./internal/go.cmd` directories.  At least Go 1.13 is expected.
-
 Gomodsrv can be run without arguments;
 a configuration file $HOME/lib/gomodsrv.ini has to be created with the following contents:
 

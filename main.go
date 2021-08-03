@@ -19,7 +19,7 @@ import (
 	"github.com/knieriem/text/ini"
 	"github.com/knieriem/tool"
 
-	"github.com/knieriem/gomodsrv/internal/go.cmd/modfetch/codehost"
+	"github.com/knieriem/gointernal/cmd/go/cfg"
 )
 
 var serviceAddr = ":7070"
@@ -78,7 +78,7 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
-	codehost.WorkRoot = conf.CodeHostDir
+	cfg.GOMODCACHE = conf.CodeHostDir
 	roots := conf.VcsModulesRoots
 	if len(roots) == 0 {
 		fmt.Println("No vcs module root defined. Exiting.")
