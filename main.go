@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"go/build"
 	"io"
 	"log"
 	"net/http"
@@ -25,9 +24,8 @@ import (
 var serviceAddr = ":7070"
 
 type confData struct {
-	ServiceAddr        string
-	VcsModulesRoots    []string
-	FallbackToModCache bool
+	ServiceAddr     string
+	VcsModulesRoots []string
 }
 
 type ModuleMap map[string]*Module
@@ -158,13 +156,6 @@ func main() {
 			io.Copy(w, &b)
 		})
 		http.Handle("/"+path+"/", r)
-	}
-	if conf.FallbackToModCache {
-		list := filepath.SplitList(build.Default.GOPATH)
-		if len(list) != 0 {
-			goModCache := filepath.Join(list[0], "pkg", "mod", "cache", "download")
-			http.Handle("/", http.FileServer(http.Dir(goModCache)))
-		}
 	}
 
 	if conf.ServiceAddr != "" {
