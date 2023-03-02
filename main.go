@@ -28,7 +28,6 @@ type confData struct {
 	ServiceAddr        string
 	VcsModulesRoots    []string
 	FallbackToModCache bool
-	CodeHostDir        string
 }
 
 type ModuleMap map[string]*Module
@@ -67,7 +66,25 @@ type VCSRevision interface {
 	WriteZIP(w io.Writer) error
 }
 
+func setupEnv() {
+	cfg.EnvName = "GOMODSRVENV"
+	cfg.ConfigDirname = "github.com-knieriem-gomodsrv"
+
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		errExit(err)
+	}
+
+	env := []cfg.EnvVar{
+		{Name: "GOMODSRVCACHE", Value: filepath.Join(cacheDir, cfg.ConfigDirname), Var: &cfg.GOMODCACHE},
+	}
+	cfg.SetupEnv(env)
+
+}
+
 func main() {
+	setupEnv()
+
 	var conf confData
 	f := ini.NewFile("gomodsrv.ini", ".ini", "c")
 	ini.BindHomeLib()
@@ -78,7 +95,6 @@ func main() {
 	if err != nil {
 		errExit(err)
 	}
-	cfg.GOMODCACHE = conf.CodeHostDir
 	roots := conf.VcsModulesRoots
 	if len(roots) == 0 {
 		fmt.Println("No vcs module root defined. Exiting.")
