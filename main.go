@@ -140,6 +140,7 @@ func main() {
 		s.HandleFunc("/@v/{version}.mod", func(w http.ResponseWriter, r *http.Request) {
 			v := m.modVersion(r)
 			if v == nil {
+				http.Error(w, "module version not found", http.StatusNotFound)
 				return
 			}
 			if len(v.GoMod) == 0 {
