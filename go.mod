@@ -5,7 +5,7 @@ require (
 	github.com/knieriem/gointernal v0.1.0
 	github.com/knieriem/text v0.6.0
 	github.com/knieriem/tool v0.1.0
-	golang.org/x/mod v0.4.2
+	golang.org/x/mod v0.5.1
 )
 
 go 1.13

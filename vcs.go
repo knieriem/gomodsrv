@@ -7,6 +7,8 @@ import (
 
 	"github.com/knieriem/gointernal/cmd/go/modfetch"
 	"github.com/knieriem/gointernal/cmd/go/modfetch/codehost"
+
+	"golang.org/x/mod/module"
 	"golang.org/x/mod/semver"
 )
 
@@ -33,11 +35,12 @@ func ScanVCS(mm ModuleMap, vcs, pathPrefix, repoRoot string) error {
 			return err
 		}
 	}
+
 	info, err := repo.Latest()
 	if err != nil {
 		return err
 	}
-	v := modfetch.PseudoVersion("", "", info.Time, info.Short)
+	v := module.PseudoVersion("", "", info.Time, info.Short)
 	err = setupModVersion(mm, repo, info.Short, v, repoRoot, pathPrefix)
 	if err != nil {
 		return err
