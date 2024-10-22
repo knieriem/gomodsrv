@@ -18,8 +18,6 @@ a configuration file $HOME/lib/gomodsrv.ini has to be created with the following
 		<path to the root of a file system tree containing vcs-controlled modules>
 		<another path>
 
-	code-host-dir	<a directory, managed by modfetch/codehost, keeping local copies of repositories>
-
 	service-addr	<address to listen to>
 
 For example:
@@ -27,11 +25,18 @@ For example:
 	vcs-module-roots
 		/home/src
 
-	code-host-dir	/home/gomodsrv/codehost
-
 	service-addr	:7070
 
 An alternative configuration file may be specified using option `-c`.
+
+Similar to the `go` cmd,
+_gomodsrv_ keeps environment variables in a file located under `os.UserConfigDir() + "github.com-knieriem-gomodsrv/env"`.
+
+_Gomodsrv_ is using a cache managed by `modfetch/codehost`,
+keeping local copies of repositories.
+The location can be configured using the `GOMODSRVCACHE` environment variable,
+which is `os.UserConfDir() + "github.com-knieriem-gomodsrv"` on default.
+
 
 ### TODO
 
