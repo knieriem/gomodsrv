@@ -75,21 +75,22 @@ func setupEnv() {
 
 	env := []cfg.EnvVar{
 		{Name: "GOMODSRVCACHE", Value: filepath.Join(cacheDir, cfg.ConfigDirname), Var: &cfg.GOMODCACHE},
+		{Name: "GOMODSRVINI", Value: "gomodsrv.ini", Var: &confFilename},
 	}
 	cfg.SetupEnv(env)
 
 }
 
+var conf confData
+var confFilename string
+
 func main() {
 	setupEnv()
 
-	var conf confData
-	f := ini.NewFile("gomodsrv.ini", ".ini", "c")
-	ini.BindHomeLib()
 	flag.Parse()
 
-	err := f.Parse(&conf)
-	fmt.Println("# Go mod proxy (" + f.Using + ")")
+	ini.BindOS("/", "os")
+	_, err := ini.ParseFile(confFilename, &conf)
 	if err != nil {
 		errExit(err)
 	}
@@ -99,8 +100,14 @@ func main() {
 		os.Exit(0)
 	}
 	mm := make(ModuleMap, 128)
+
+	confDir := filepath.Dir(confFilename)
 	for _, root := range roots {
-		err := vcsRootScanModules(mm, root)
+		rootAbs := root
+		if !filepath.IsAbs(rootAbs) {
+			rootAbs = filepath.Clean(filepath.Join(confDir, root))
+		}
+		err := vcsRootScanModules(mm, rootAbs)
 		if err != nil {
 			errExit(err)
 		}
