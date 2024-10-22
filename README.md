@@ -1,17 +1,23 @@
 # gomodsrv
 
-Gomodsrv is acting as a GOPROXY (see `go help goproxy`),
+Gomodsrv is acting as a [Go module proxy],
 serving versioned modules from local VCS repositories.
-This may be useful for cases where you are using module paths like your-domain.com/x/y,
+This may be useful for cases where module paths like your-domain.com/x/y are used,
 but no Git or Mercurial servers provide the repositories,
-but instead the repositories are kept private in a file system structure
+instead the repositories are kept private in a file system structure
 (that's a different use case than the one supported by the GOPRIVATE variable).
 
-Currently there is initial support for Git and Mercurial repositories,
+When preliminary support for modules was added to Go as part of the 1.11 release in August 2018,
+I wrote `gomodsrv` as a simple tool to be able to serve my private repositories via
+the [GOPROXY protocol].
+There is initial support for Git and Mercurial repositories,
 based on the `go` command's internal `modfetch/codehost` package.
 This way module ZIP files are created the same way as by the `go` tool.
-The program is still in an early stage,
-but so far appears sufficient to make my private modules available to Go locally.
+The program has been in an early stage for some years,
+but it got gradually cleaned up to make it easier to use.
+
+[Go module proxy]: https://go.dev/ref/mod#module-proxy
+[GOPROXY protocol]: https://go.dev/ref/mod#goproxy-protocol
 
 
 ## Configuration
