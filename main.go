@@ -96,7 +96,6 @@ func setupEnv() {
 		{Name: "GOMODSRVINI", Value: "gomodsrv.ini", Var: &confFilename},
 	}
 	cfg.SetupEnv(env)
-
 }
 
 func main() {
