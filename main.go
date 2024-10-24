@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
@@ -93,7 +94,7 @@ func setupEnv() {
 
 	env := []cfg.EnvVar{
 		{Name: "GOMODSRVCACHE", Value: filepath.Join(cacheDir, cfg.ConfigDirname), Var: &cfg.GOMODCACHE},
-		{Name: "GOMODSRVINI", Value: "gomodsrv.ini", Var: &confFilename},
+		{Name: "GOMODSRVINI", Value: "gomodsrv.ini", Var: &envConfFilename},
 	}
 	cfg.SetupEnv(env)
 }
@@ -209,13 +210,18 @@ func setenv(env []string, name, value string) []string {
 }
 
 var conf confData
-var confFilename string
+var envConfFilename string
 var info = new(bytes.Buffer)
 
 func setupProxy() error {
-	confFilename, err := filepath.Abs(confFilename)
+	confFilename, err := filepath.Abs(envConfFilename)
 	if err != nil {
 		return err
+	}
+
+	if localConf, ok := lookupLocalConf(); ok {
+		fmt.Println("* reading configuration from", localConf)
+		confFilename = localConf
 	}
 
 	ini.BindOS("/", "os")
@@ -299,6 +305,26 @@ func setupProxy() error {
 		w.Write(info.Bytes())
 	})
 	return nil
+}
+
+func lookupLocalConf() (filename string, ok bool) {
+	// Look for "gomodsrv.ini" in the current worktree and its parent dirs.
+	dir, err := os.Getwd()
+	if err != nil {
+		return "", false
+	}
+	for dir != "/" {
+		c := filepath.Join(dir, "gomodsrv.ini")
+		if _, err := os.Stat(c); err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				dir = filepath.Dir(dir)
+				continue
+			}
+			break
+		}
+		return c, true
+	}
+	return "", false
 }
 
 func vcsRootScanModules(w io.Writer, dest ModuleMap, baseDir string) error {

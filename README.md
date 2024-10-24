@@ -22,7 +22,10 @@ but it got gradually cleaned up to make it easier to use.
 
 ## Configuration
 
-Gomodsrv reads its configuration from a file whose location can be controlled using env variable GOMODSRVINI. This variable can be set using `gomodsrv env -w GOMODSRVINI=/path/to/file`.
+Gomodsrv first looks for a configuration file `gomodsrv.ini` in the current directory or in one of its parent directories.
+If no file can be found,
+gomodsrv will use the location specified in the environment variable `GOMODSRVINI`.
+This variable can be set using `gomodsrv env -w GOMODSRVINI=/path/to/file`.
 
 The configuration file has the following, tab-indented structure:
 
