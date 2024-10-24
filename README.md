@@ -88,3 +88,6 @@ Gomodsrv supports subcommands similar to the `go` command, actually using code f
 -	support module versions ≥v2 that are managed in subdirectories
 
 -	support multiple modules per repository
+
+-	The conversion from gorilla/mux to using http.ServeMux is currently held up
+	because the latter does not support {wildcard}.ext syntax yet.
