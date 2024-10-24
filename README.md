@@ -20,6 +20,11 @@ but it got gradually cleaned up to make it easier to use.
 [GOPROXY protocol]: https://go.dev/ref/mod#goproxy-protocol
 
 
+## Installation
+
+	go install github.com/knieriem/gomodsrv@latest
+
+
 ## Configuration
 
 Gomodsrv first looks for a configuration file `gomodsrv.ini` in the current directory or in one of its parent directories.
