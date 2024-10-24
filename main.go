@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -12,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"time"
@@ -173,9 +175,25 @@ func serveShell(_ context.Context, _ *cli.Command, args []string) {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err = cmd.Run()
+	err = cmd.Start()
 	if err != nil {
 		errExit(err)
+	}
+
+	sig := make(chan os.Signal)
+	signal.Notify(sig, os.Interrupt)
+	go func() {
+		for s := range sig {
+			cmd.Process.Signal(s)
+		}
+	}()
+
+	err = cmd.Wait()
+	if err != nil {
+		var x *exec.ExitError
+		if !errors.As(err, &x) {
+			errExit(err)
+		}
 	}
 }
 
