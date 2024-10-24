@@ -179,7 +179,7 @@ func serveShell(_ context.Context, _ *cli.Command, args []string) {
 		errExit(err)
 	}
 
-	sig := make(chan os.Signal)
+	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 	go func() {
 		for s := range sig {
